@@ -17,7 +17,9 @@ filetype off " required! turn off
 " inspired by spf13, 自定义需要的插件集合
 if !exists('g:bundle_groups')
     " let g:bundle_groups=['python', 'javascript', 'markdown', 'html', 'css', 'tmux', 'beta', 'json', 'nginx', 'golang', 'ruby', 'less', 'php', 'coffeescript', 'shell']
-    let g:bundle_groups=['python', 'javascript', 'markdown', 'html', 'css', 'tmux', 'beta']
+    " let g:bundle_groups=['python', 'javascript', 'markdown', 'html', 'css', 'tmux', 'beta', 'json', 'nginx', 'golang', 'ruby', 'less', 'php', 'coffeescript']
+    " let g:bundle_groups=['python', 'javascript', 'markdown', 'html', 'css', 'tmux', 'beta', 'json', 'php', 'twig', ]
+    let g:bundle_groups=['python', 'javascript', 'markdown', 'html', 'css', 'tmux', 'beta', 'json', 'nginx', 'ruby', 'php', 'coffeescript', 'twig', ]
 endif
 
 " ----------------------------------------------------------------------------
@@ -41,7 +43,7 @@ Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 " 代码自动补全
 " 迄今为止用到的最好的自动VIM自动补全插件
 " 重启 :YcmRestartServer
-Plug 'Valloric/YouCompleteMe'
+" Plug 'Valloric/YouCompleteMe'
 " 自动补全单引号，双引号等
 Plug 'Raimondi/delimitMate'
 " 自动补全html/xml标签
@@ -61,6 +63,7 @@ Plug 'bronson/vim-trailing-whitespace'
 " easyalign
 " 快速赋值语句对齐
 Plug 'junegunn/vim-easy-align'
+" Plug 'godlygeek/tabular'
 
 " quick movement
 " easymotion
@@ -135,6 +138,17 @@ Plug 'altercation/vim-colors-solarized'
 " molokai
 " 主题 molokai
 Plug 'tomasr/molokai'
+" others
+" 主题 others
+Plug 'sjl/badwolf'
+Plug 'vim-scripts/twilight'
+Plug 'nanotech/jellybeans.vim'
+Plug 'vim-scripts/rdark'
+Plug 'herrbischoff/cobalt2.vim'
+Plug 'rakr/vim-one'
+Plug 'junegunn/seoul256.vim'
+Plug 'Haron-Prime/Antares'
+Plug 'jacoborus/tender.vim'
 
 
 " nav
@@ -197,6 +211,9 @@ if count(g:bundle_groups, 'php')
     " piv
     " shift-v可以查看函数手册 / leader-pd生成注释
     Plug 'spf13/PIV'
+    Plug 'stephpy/vim-php-cs-fixer'
+    Plug 'StanAngeloff/php.vim'
+    Plug 'vim-scripts/PDV--phpDocumentor-for-Vim'
 endif
 
 if count(g:bundle_groups, 'ruby')
@@ -262,6 +279,12 @@ endif
 
 if count(g:bundle_groups, 'nginx')
     " Plug 'evanmiller/nginx-vim-syntax'
+endif
+
+if count(g:bundle_groups, 'twig')
+    " ###### twig syntax  #########
+    Plug 'evidens/vim-twig'
+    autocmd BufNewFile,BufRead *.twig set filetype=html.twig
 endif
 
 
@@ -475,6 +498,27 @@ call plug#end()
     let g:easy_align_ignore_groups = ['Comment', 'String']
 " }}}
 
+    " Tabularize {
+        " if isdirectory(expand("~/.vim/bundle/tabular"))
+            " nmap <Leader>a& :Tabularize /&<CR>
+            " vmap <Leader>a& :Tabularize /&<CR>
+            " nmap <Leader>a= :Tabularize /^[^=]*\zs=<CR>
+            " vmap <Leader>a= :Tabularize /^[^=]*\zs=<CR>
+            " nmap <Leader>a=> :Tabularize /=><CR>
+            " vmap <Leader>a=> :Tabularize /=><CR>
+            " nmap <Leader>a: :Tabularize /:<CR>
+            " vmap <Leader>a: :Tabularize /:<CR>
+            " nmap <Leader>a:: :Tabularize /:\zs<CR>
+            " vmap <Leader>a:: :Tabularize /:\zs<CR>
+            " nmap <Leader>a, :Tabularize /,<CR>
+            " vmap <Leader>a, :Tabularize /,<CR>
+            " nmap <Leader>a,, :Tabularize /,\zs<CR>
+            " vmap <Leader>a,, :Tabularize /,\zs<CR>
+            " nmap <Leader>a<Bar> :Tabularize /<Bar><CR>
+            " vmap <Leader>a<Bar> :Tabularize /<Bar><CR>
+        " endif
+    " }
+
 " ################### 快速移动 ###################
 
 " easymotion {{{
@@ -581,30 +625,34 @@ call plug#end()
 " }}}
 
 " git.  git操作还是习惯命令行,vim里面处理简单diff编辑操作
-
-" fugitive {{{
-    " :Gdiff  :Gstatus :Gvsplit
-    nnoremap <leader>ge :Gdiff<CR>
-    " not ready to open
-    " <leader>gb maps to :Gblame<CR>
-    " <leader>gs maps to :Gstatus<CR>
-    " <leader>gd maps to :Gdiff<CR>  和现有冲突
-    " <leader>gl maps to :Glog<CR>
-    " <leader>gc maps to :Gcommit<CR>
-    " <leader>gp maps to :Git push<CR>
-" }}}
+" Fugitive {
+    if isdirectory(expand("~/.vim/bundle/vim-fugitive/"))
+        nnoremap <silent> <leader>gs :Gstatus<CR>
+        nnoremap <silent> <leader>gd :Gdiff<CR>
+        nnoremap <silent> <leader>gc :Gcommit<CR>
+        nnoremap <silent> <leader>gb :Gblame<CR>
+        nnoremap <silent> <leader>gl :Glog<CR>
+        nnoremap <silent> <leader>gp :Git push<CR>
+        nnoremap <silent> <leader>gr :Gread<CR>
+        nnoremap <silent> <leader>gw :Gwrite<CR>
+        nnoremap <silent> <leader>ge :Gedit<CR>
+        " Mnemonic _i_nteractive
+        nnoremap <silent> <leader>gi :Git add -p %<CR>
+        nnoremap <silent> <leader>gg :SignifyToggle<CR>
+    endif
+"}
 
 " gitgutter {{{
     " 同git diff,实时展示文件中修改的行
     " 只是不喜欢除了行号多一列, 默认关闭,gs时打开
-    let g:gitgutter_map_keys = 0
-    let g:gitgutter_enabled = 0
-    let g:gitgutter_highlight_lines = 1
+    let g:gitgutter_map_keys = 1
+    let g:gitgutter_enabled = 1
+    let g:gitgutter_highlight_lines = 0
     nnoremap <leader>gs :GitGutterToggle<CR>
 " }}}
 
 " gundo {{{
-    noremap <leader>h :GundoToggle<CR>
+    noremap <leader>u :GundoToggle<CR>
 " }}}
 
 " ################### 显示增强 ###################
@@ -673,8 +721,9 @@ call plug#end()
 " ################### 快速导航 ###################
 
 " nerdtree nerdtreetabs {{{
-    " map <leader>n :NERDTreeToggle<CR>
+    map <leader>e :NERDTreeToggle<CR>
     let NERDTreeHighlightCursorline=1
+    let NERDTreeShowBookmarks=1
     let NERDTreeIgnore=[ '\.pyc$', '\.pyo$', '\.obj$', '\.o$', '\.so$', '\.egg$', '^\.git$', '^\.svn$', '^\.hg$' ]
     "close vim if the only window left open is a NERDTree
     autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | end
@@ -707,7 +756,8 @@ call plug#end()
 
 " 标签导航
 " tagbar {{{
-    nmap <F9> :TagbarToggle<CR>
+    " nmap <F9> :TagbarToggle<CR>
+    nnoremap <silent> <leader>t :TagbarToggle<CR>
     let g:tagbar_autofocus = 1
     " let g:tagbar_autoshowtag = 1
     " let g:tagbar_show_visibility = 1
@@ -815,6 +865,26 @@ call plug#end()
 " }}}
 
 " nginx {{{
+" }}}
+
+" php {{{
+    if isdirectory(expand("~/.vim/bundle/PIV"))
+        let g:DisableAutoPHPFolding = 1
+        let g:PIVAutoClose = 0
+    endif
+    if isdirectory(expand("~/.vim/bundle/vim-php-cs-fixer"))
+        " If php-cs-fixer is in $PATH, you don't need to define line below
+        let g:php_cs_fixer_path = "~/php-cs-fixer.phar" " define the path to the php-cs-fixer.phar
+        let g:php_cs_fixer_level = "psr2"              " which level ?
+        let g:php_cs_fixer_config = "default"             " configuration
+        "let g:php_cs_fixer_config_file = '.php_cs'       " configuration file
+        let g:php_cs_fixer_php_path = "php"               " Path to PHP
+        " If you want to define specific fixers:
+        "let g:php_cs_fixer_fixers_list = "linefeed,short_tag,indentation"
+        let g:php_cs_fixer_enable_default_mapping = 1     " Enable the mapping by default (<leader>pcd)
+        let g:php_cs_fixer_dry_run = 0                    " Call command with dry-run option
+        let g:php_cs_fixer_verbose = 0                    " Return the output of command if 1, else an inline information.
+    endif
 " }}}
 
 

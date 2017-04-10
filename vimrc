@@ -91,14 +91,14 @@ set noswapfile
 set wildignore=*.swp,*.bak,*.pyc,*.class,.svn
 
 " 突出显示当前列
-set cursorcolumn
+" set cursorcolumn
 " 突出显示当前行
-set cursorline
+" set cursorline
 
 
 " 设置 退出vim后，内容显示在终端屏幕, 可以用于查看和复制, 不需要可以去掉
 " 好处：误删什么的，如果以前屏幕打开，可以找回
-set t_ti= t_te=
+" set t_ti= t_te=
 
 
 " 鼠标暂不启用, 键盘党....
@@ -106,7 +106,7 @@ set mouse-=a
 " 启用鼠标
 " set mouse=a
 " Hide the mouse cursor while typing
-" set mousehide
+set mousehide
 
 
 " 修复ctrl+m 多光标操作选择的bug，但是改变了ctrl+v进行字符选中时将包含光标下的字符
@@ -182,11 +182,16 @@ set foldenable
 " syntax    使用语法定义折叠
 " diff      对没有更改的文本进行折叠
 " marker    使用标记进行折叠, 默认标记是 {{{ 和 }}}
-set foldmethod=indent
-set foldlevel=99
+set foldmethod=syntax
+" set defalt to all folded
+set foldlevel=0
 " 代码折叠自定义快捷键 <leader>zz
 let g:FoldMethod = 0
 map <leader>zz :call ToggleFold()<cr>
+" jump to start/end of fold
+nmap z] zo]z
+nmap z[ zo[z
+
 fun! ToggleFold()
     if g:FoldMethod == 0
         exe "normal! zM"
@@ -497,8 +502,8 @@ nnoremap <silent> <leader>tt :execute 'tabnext ' . g:last_active_tab<cr>
 autocmd TabLeave * let g:last_active_tab = tabpagenr()
 
 " 新建tab  Ctrl+t
-nnoremap <C-t>     :tabnew<CR>
-inoremap <C-t>     <Esc>:tabnew<CR>
+nnoremap <leader>nt :tabnew<CR>
+inoremap <leader>nt <Esc>:tabnew<CR>
 
 
 " => 选中及操作改键
@@ -563,7 +568,7 @@ nmap <silent> <leader>sv :so $MYVIMRC<CR>
 
 " 具体编辑文件类型的一般设置，比如不要 tab 等
 autocmd FileType python set tabstop=4 shiftwidth=4 expandtab ai
-autocmd FileType ruby,javascript,html,css,xml set tabstop=2 shiftwidth=2 softtabstop=2 expandtab ai
+autocmd FileType ruby,javascript,html,css,xml,html.twig set tabstop=2 shiftwidth=2 softtabstop=2 expandtab ai
 autocmd BufRead,BufNewFile *.md,*.mkd,*.markdown set filetype=markdown.mkd
 autocmd BufRead,BufNewFile *.part set filetype=html
 " disable showmatch when use > in php
@@ -663,11 +668,31 @@ endif
 
 " theme主题
 set background=dark
+" set background=light
 set t_Co=256
 
 colorscheme solarized
+let g:solarized_termcolors=256
 " colorscheme molokai
+" let g:molokai_original = 1
+" let g:rehash256 = 1
 " colorscheme desert
+" colorscheme badwolf
+" colorscheme jellybeans
+" colorscheme cobalt2
+" colorscheme one
+" colorscheme seoul256
+" colorscheme antares
+" colorscheme tender
+
+" airline theme设置
+" let g:airline_theme='solarized'
+let g:airline_theme='badwolf'
+" Set high visibility for diff mode
+let g:solarized_diffmode="high"
+if &diff
+    " set diffopt=filler,context:1000000 " filler is default and inserts empty lines for sync
+endif
 
 
 " 设置标记一列的背景颜色和数字一行颜色一致
@@ -685,6 +710,20 @@ highlight SpellRare term=underline cterm=underline
 highlight clear SpellLocal
 highlight SpellLocal term=underline cterm=underline
 
+" php.vim设置
+function! PhpSyntaxOverride()
+  hi! def link phpDocTags  phpDefine
+  hi! def link phpDocParam phpType
+endfunction
 
+augroup phpSyntaxOverride
+  autocmd!
+  autocmd FileType php call PhpSyntaxOverride()
+augroup END
+" autoload .vimrc when enter vim
+augroup vimrcAutoLoadWhenEnter
+  autocmd!
+  autocmd vimenter * :so ~/.vimrc
+augroup END
 
 
